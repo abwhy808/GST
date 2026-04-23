@@ -1,25 +1,15 @@
-Что делать:
-Сначала клонируете репозиторий себе на пк
-```
- git clone <ссылка на репо>
-```
+# GOST Document Validator API
 
-Далее идете с свою ветку
+Backend service for validating document formatting according to **GOST 7.32-2017**.
 
-```
-git checkout <ваше имя>
-```
+##  Features
+- Get formatting requirements via API
+- Validate `.docx` documents (in progress)
+- Built with Django
 
-Все ветки можете увидеть в репозитории
-Дальше копаетесь по коду
-после того как сделали фичу пишете
-```
-git add .
-git commit -m "feat: фича нужно название таске которую вы выполнили"
-git push origin <имя вашей ветки>
-```
+##  Installation
 
-Чтобы установить библиотеку:
-```
+```bash
+git clone https://github.com/abwhy808/GST.git
+cd GST
 pip install -r requirements.txt
-```
