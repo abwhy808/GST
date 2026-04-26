@@ -2,6 +2,8 @@ from pathlib import Path
 from typing import Any
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
+from .helpers import _open_document, _iter_all_paragraphs_with_page, _snippet, _is_heading
+
 
 def check_alignment(path: str | Path) -> dict[str, Any]:
     """
@@ -42,3 +44,14 @@ def check_alignment(path: str | Path) -> dict[str, Any]:
         "message": "Нарушено выравнивание.",
         "violations": violations
     }
+
+
+def format_alignment(input_path, output_path):
+    """Установить выравнивание по ширине для всех абзацев."""
+    doc = Document(input_path)
+
+    for paragraph in doc.paragraphs:
+        if not _is_heading(paragraph):
+            paragraph.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+    doc.save(output_path)

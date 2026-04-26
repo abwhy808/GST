@@ -2,6 +2,9 @@ from pathlib import Path
 from typing import Any
 import re
 
+from docx import Document
+from .helpers import _open_document, _iter_all_paragraphs_with_page, _snippet
+
 
 def check_dashes(path: str | Path) -> dict[str, Any]:
     """
@@ -45,3 +48,24 @@ def check_dashes(path: str | Path) -> dict[str, Any]:
         "message": "Найдены дефисы/тире, предложены исправления.",
         "violations": violations
     }
+
+
+def format_dashes(input_path, output_path):
+    """Исправить дефисы и тире согласно ГОСТ."""
+    doc = Document(input_path)
+
+    for paragraph in doc.paragraphs:
+        text = paragraph.text
+        
+        # Диапазоны чисел: 1-2 -> 1–2 (en dash)
+        text = re.sub(r'(?<=\d)-(?=\d)', '–', text)
+        # Тире между словами: ' - ' -> ' — '
+        text = re.sub(r'\s-\s', ' — ', text)
+        
+        # Обновляем текст параграфа через runs
+        if text != paragraph.text:
+            for run in paragraph.runs:
+                run.text = ''
+            paragraph.text = text
+
+    doc.save(output_path)

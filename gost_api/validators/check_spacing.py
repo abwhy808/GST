@@ -1,5 +1,10 @@
+from docx import Document
+from docx.shared import Pt
+from docx.enum.text import WD_LINE_SPACING
 from pathlib import Path
 from typing import Any
+
+from .helpers import _open_document, _iter_all_paragraphs_with_page, _snippet
 
 
 def check_spacing(path: str | Path) -> dict[str, Any]:
@@ -54,3 +59,16 @@ def check_spacing(path: str | Path) -> dict[str, Any]:
         "message": "Нарушены интервалы между абзацами.",
         "violations": violations
     }
+
+
+def format_spacing(input_path, output_path):
+    doc = Document(input_path)
+
+    for paragraph in doc.paragraphs:
+        fmt = paragraph.paragraph_format
+
+        fmt.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
+        fmt.space_before = Pt(0)
+        fmt.space_after = Pt(0)
+
+    doc.save(output_path)

@@ -1,6 +1,9 @@
 from pathlib import Path
 from typing import Any
 
+from docx import Document
+from .helpers import _open_document, _iter_all_paragraphs_with_page, _snippet
+
 
 def check_hyphenation(path: str | Path) -> dict[str, Any]:
     """
@@ -33,3 +36,16 @@ def check_hyphenation(path: str | Path) -> dict[str, Any]:
         "message": "Обнаружены переносы слов.",
         "violations": violations
     }
+
+
+def format_hyphenation(input_path, output_path):
+    """Удалить мягкие переносы (soft hyphens) из документа."""
+    doc = Document(input_path)
+
+    for paragraph in doc.paragraphs:
+        if "\u00AD" in paragraph.text:
+            # Удаляем мягкие переносы через runs
+            for run in paragraph.runs:
+                run.text = run.text.replace("\u00AD", "")
+
+    doc.save(output_path)
